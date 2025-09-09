@@ -21,14 +21,11 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Check code formatting (Spotless)
-        run: mvn spotless:check
+      - name: Check code formatting
+        run: mvn -B -ntp spotless:check
 
-      - name: Run Unit Tests
-        run: mvn -B test
-
-      - name: Run Integration Tests + Verify
-        run: mvn -B verify
+      - name: Build, test, coverage, package
+        run: mvn -B -ntp verify
 
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v4
