@@ -14,24 +14,23 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 class CurrencyControllerIT {
 
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-    @Test
-    void postQuoteTest() throws Exception {
-        mockMvc.perform(
-                        post("/api/v1/quote")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{\"pair\":\"USDNGN\",\"price\":1600.50}")
-                )
-                .andExpect(status().isCreated());
-    }
+  @Test
+  void postQuoteTest() throws Exception {
+    mockMvc
+        .perform(
+            post("/api/v1/quote")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"pair\":\"USDNGN\",\"price\":1600.50}"))
+        .andExpect(status().isCreated());
+  }
 
-    @Test
-    void getQuoteTest() throws Exception {
-        mockMvc.perform(get("/api/v1/quote").param("pair", "USD/NGN"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.pair").value("USD/NGN"));
-    }
-
+  @Test
+  void getQuoteTest() throws Exception {
+    mockMvc
+        .perform(get("/api/v1/quote").param("pair", "USD/NGN"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.pair").value("USD/NGN"));
+  }
 }
