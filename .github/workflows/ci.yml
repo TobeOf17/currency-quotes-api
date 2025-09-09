@@ -1,10 +1,10 @@
-name: ci
+name: CI
 
 on:
   push:
-    branches: ["phase-1", "main"]
+    branches: [ "phase-1", "main" ]
   pull_request:
-    branches: ["phase-1", "main"]
+    branches: [ "phase-1", "main" ]
 
 jobs:
   build:
@@ -21,5 +21,23 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Build with Maven
+      - name: Check code formatting (Spotless)
+        run: mvn spotless:check
+
+      - name: Run Unit Tests
+        run: mvn -B test
+
+      - name: Run Integration Tests + Verify
         run: mvn -B verify
+
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: target/site/jacoco/*
+
+      - name: Upload Packaged JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: currency-quotes-api-jar
+          path: target/*.jar
