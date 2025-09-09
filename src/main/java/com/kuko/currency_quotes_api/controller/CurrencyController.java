@@ -2,11 +2,11 @@ package com.kuko.currency_quotes_api.controller;
 
 import com.kuko.currency_quotes_api.model.Quote;
 import com.kuko.currency_quotes_api.service.QuoteService;
+import java.time.Instant;
 import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -18,13 +18,19 @@ public class CurrencyController {
     this.quoteService = quoteService;
   }
 
-  // Get any currency pair quote
-  @GetMapping("/quote/{pair}")
-  public Quote getQuote(@PathVariable String pair) {
-    return quoteService.getQuote(pair);
+  // POST endpoint
+  @PostMapping("/quote")
+  public ResponseEntity<Quote> createQuote(@RequestBody Quote request) {
+    Quote saved = new Quote(request.getPair(), request.getPrice(), Instant.now());
+    return ResponseEntity.status(HttpStatus.CREATED).body(saved);
   }
 
-  // Get all major currencies to Naira rates
+  @GetMapping("/quote")
+  public ResponseEntity<Quote> getQuote(@RequestParam String pair) {
+    Quote q = quoteService.getQuote(pair);
+    return (q == null) ? ResponseEntity.notFound().build() : ResponseEntity.ok(q);
+  }
+
   @GetMapping("/naira/rates")
   public List<Quote> getAllNairaRates() {
     return List.of(
@@ -36,7 +42,6 @@ public class CurrencyController {
         quoteService.getQuote("AUD/NGN"));
   }
 
-  // Get Naira to all major currencies
   @GetMapping("/naira/convert")
   public List<Quote> getNairaConversions() {
     return List.of(

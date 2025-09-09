@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class QuoteService {
 
-  // Current exchange rates as of September 2025
+  // Exchange rates as of September 2025
   private final Map<String, BigDecimal> currentRates =
       Map.ofEntries(
           // Major currencies to NGN

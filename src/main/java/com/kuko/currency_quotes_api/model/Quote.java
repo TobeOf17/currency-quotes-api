@@ -8,10 +8,26 @@ public class Quote {
   private BigDecimal price;
   private Instant updatedAt;
 
+  public Quote(String pair, BigDecimal price, Instant updatedAt) {
+    this.pair = pair;
+    this.price = price;
+    this.updatedAt = updatedAt;
+  }
+
   public Quote(String pair, BigDecimal price) {
     this.pair = pair;
     this.price = price;
     this.updatedAt = Instant.now();
+  }
+
+  public Quote() {}
+
+  public void setPair(String pair) {
+    this.pair = pair;
+  }
+
+  public void setUpdatedAt(Instant updatedAt) {
+    this.updatedAt = updatedAt;
   }
 
   public String getPair() {
