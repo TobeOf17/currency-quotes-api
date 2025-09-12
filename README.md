@@ -30,8 +30,11 @@ Each request returns the conversion pair, its price, and the last updated timest
 
 Supported pairs include NGN/USD, NGN/EUR, NGN/GBP, NGN/JPY, NGN/CAD, NGN/AUD (and their reverse pairs).
 
-GET all NGN conversion rates
+GET all rates to NGN 
 curl -s http://localhost:8080/api/v1/naira/convert | jq
+
+GET all NGN conversion rates
+curl -s http://localhost:8080/api/v1/naira/convertTo | jq
 
 GET single currency pair by query
 curl -s "http://localhost:8080/api/v1/quote?pair=NGN/USD" | jq
