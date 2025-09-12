@@ -2,26 +2,30 @@ package com.kuko.currency_quotes_api;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.kuko.currency_quotes_api.model.Quote;
 import com.kuko.currency_quotes_api.service.QuoteService;
-import java.math.BigDecimal;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class QuoteServiceTest {
+public class QuoteServiceTest {
 
-  private final QuoteService service = new QuoteService();
+  private QuoteService quoteService;
 
-  @Test
-  void returnsQuoteWhenPairExists() {
-    Quote quote = service.getQuote("USD/NGN");
-    assertNotNull(quote);
-    assertEquals("USD/NGN", quote.getPair());
-    assertEquals(new BigDecimal("1522.66"), quote.getPrice());
+  @BeforeEach
+  void setup() {
+    quoteService = new QuoteService();
   }
 
   @Test
-  void returnsNullWhenPairDoesNotExist() {
-    Quote quote = service.getQuote("FAKE/PAIR");
-    assertNull(quote);
+  void testGetQuoteNotNull() {
+    var quote = quoteService.getQuote("USD/NGN");
+    assertNotNull(quote, "Quote should not be null for USD/NGN");
+  }
+
+  @Test
+  void testGetQuoteUnsupportedPair() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> quoteService.getQuote("XYZ/ABC"),
+        "Unsupported pair should throw IllegalArgumentException");
   }
 }

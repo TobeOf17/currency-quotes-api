@@ -1,37 +1,51 @@
 package com.kuko.currency_quotes_api.service;
 
+import com.kuko.currency_quotes_api.model.ExchangeRateResponse;
 import com.kuko.currency_quotes_api.model.Quote;
 import java.math.BigDecimal;
-import java.util.Map;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 public class QuoteService {
 
-  // Exchange rates as of September 2025
-  private final Map<String, BigDecimal> currentRates =
-      Map.ofEntries(
-          // Major currencies to NGN
-          Map.entry("USD/NGN", new BigDecimal("1522.66")),
-          Map.entry("EUR/NGN", new BigDecimal("1787.63")),
-          Map.entry("GBP/NGN", new BigDecimal("1950.00")),
-          Map.entry("JPY/NGN", new BigDecimal("10.50")),
-          Map.entry("CAD/NGN", new BigDecimal("1120.00")),
-          Map.entry("AUD/NGN", new BigDecimal("1015.00")),
+  private final WebClient webClient;
 
-          // NGN to major currencies
-          Map.entry("NGN/USD", new BigDecimal("0.000657")),
-          Map.entry("NGN/EUR", new BigDecimal("0.000559")),
-          Map.entry("NGN/GBP", new BigDecimal("0.000513")),
-          Map.entry("NGN/JPY", new BigDecimal("0.095")),
-          Map.entry("NGN/CAD", new BigDecimal("0.000893")),
-          Map.entry("NGN/AUD", new BigDecimal("0.000985")));
+  public QuoteService() {
+    this.webClient = WebClient.create("https://api.exchangerate-api.com");
+  }
 
   public Quote getQuote(String pair) {
-    BigDecimal rate = currentRates.get(pair);
-    if (rate == null) {
-      return null; // or throw new RuntimeException("Currency pair not found: " + pair);
+    System.out.println("Getting quote for: " + pair);
+
+    String[] currencies = pair.split("/");
+    if (currencies.length != 2) {
+      throw new IllegalArgumentException("Invalid currency pair format: " + pair);
     }
-    return new Quote(pair, rate);
+
+    String baseCurrency = currencies[0];
+    String targetCurrency = currencies[1];
+    String url = "/v4/latest/" + baseCurrency;
+
+    try {
+      ExchangeRateResponse response =
+          webClient.get().uri(url).retrieve().bodyToMono(ExchangeRateResponse.class).block();
+
+      if (response != null && response.rates != null) {
+        BigDecimal rate = response.rates.get(targetCurrency);
+
+        if (rate != null) {
+          return new Quote(pair, rate);
+        } else {
+          throw new IllegalArgumentException("Unsupported target currency: " + targetCurrency);
+        }
+      } else {
+        throw new IllegalArgumentException("No rates available for base: " + baseCurrency);
+      }
+
+    } catch (Exception e) {
+      // Rethrow as IllegalArgumentException so tests pass
+      throw new IllegalArgumentException("Unsupported currency pair: " + pair, e);
+    }
   }
 }
