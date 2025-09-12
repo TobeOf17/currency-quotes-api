@@ -52,4 +52,15 @@ public class CurrencyController {
         quoteService.getQuote("NGN/CAD"),
         quoteService.getQuote("NGN/AUD"));
   }
+
+  @GetMapping("/naira/convertTo")
+  public List<Quote> getConversionsToNaira() {
+    return List.of(
+        quoteService.getQuote("USD/NGN"),
+        quoteService.getQuote("EUR/NGN"),
+        quoteService.getQuote("GBP/NGN"),
+        quoteService.getQuote("JPY/NGN"),
+        quoteService.getQuote("CAD/NGN"),
+        quoteService.getQuote("AUD/NGN"));
+  }
 }
