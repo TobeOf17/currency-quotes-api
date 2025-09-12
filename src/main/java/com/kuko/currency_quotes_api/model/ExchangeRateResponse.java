@@ -4,8 +4,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 public class ExchangeRateResponse {
-    public Map<String, BigDecimal> rates;
+  public Map<String, BigDecimal> rates;
 
-    public ExchangeRateResponse() {
-    }
+  public ExchangeRateResponse() {}
 }
