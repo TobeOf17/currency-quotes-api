@@ -1,0 +1,11 @@
+{
+  "name": "currency-quotes-api",
+  "addons": [
+    "log-entries"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/java"
+    }
+  ]
+}
