@@ -55,7 +55,7 @@ public class CurrencyController {
                 quoteService.getQuote("NGN/AUD"));
     }
 
-    // Hello How are you
+
     @GetMapping("/naira/convertTo")
     public List<Quote> getConversionsToNaira() {
         return List.of(
